@@ -11,9 +11,27 @@ int main()
         {
             // call function isCheia
         }
-        else if (s == "INSERIR")
+        else if (s == "MEDIANA")
         {
-            // call function inserir
+            // call function mediana
+        }else if (s == "COMPLETA")
+        {
+
+        }else if (s == "ENESIMO")
+        {
+            
+        }else if (s == "POSICAO")
+        {
+            
+        }else if (s == "MEDIANA")
+        {
+            
+        }else if (s == "IMPRIMA")
+        {
+            
+        }else if (s == "REMOVA")
+        {
+            
         }
     }
     cout << endl;
