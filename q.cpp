@@ -89,44 +89,6 @@ bool is_number(const std::string &s);
 int main()
 {
     struct Node *node = NULL;
-    
-    node = node->insert(node,5);
-    node = node->insert(node,5);
-    node = node->insert(node,10);
-    node = node->insert(node,3);
-    node = node->insert(node,2);
-    node = node->insert(node,4);
-    node = node->insert(node,1);
-    node = node->insert(node,10);
-    node = node->insert(node,12);
-    node = node->insert(node,12);
-    node = node->insert(node,0);
-    node = node->insert(node,0);
-    
-    if(node->search(node,12)){
-        cout<<"Encontrou";
-    }else{
-        cout<<"Nao encontrou";
-    }
-
-    cout<<"["<<node->key<<"]"<<endl;
-    cout<<"["<<node->numberOfChildrenRight<<"]"<<endl;
-    cout<<"["<<node->numberOfChildrenLeft<<"]"<<endl;
-
-    cout<<"["<<node->right->key<<"]"<<endl;
-    cout<<"["<<node->right->numberOfChildrenRight<<"]"<<endl;
-    cout<<"["<<node->right->numberOfChildrenLeft<<"]"<<endl;
-
-    cout<<"["<<node->left->key<<"]"<<endl;
-    cout<<"["<<node->left->numberOfChildrenRight<<"]"<<endl;
-    cout<<"["<<node->left->numberOfChildrenLeft<<"]"<<endl;
-
-    if(node->left==0)
-        cout<<"É NULO COROI"<<endl;
-    else
-        cout<<"Não é nulo";
-    if(node->right==NULL)
-        cout<<"É NULO COROI"<<endl;    
 
     string s;
     int numbers;
@@ -137,7 +99,7 @@ int main()
         if (is_number(s))
         {
             numbers = stoi(s);
-            cout << numbers;
+            node = node->insert(node, numbers);
         }
         else
         { // read commands here
@@ -170,7 +132,13 @@ int main()
             {
             }
         }
+           
     }
+    cout<<"["<<node->key<<"]"<<endl;
+    cout<<"["<<node->numberOfChildrenRight<<"]"<<endl;
+    cout<<"["<<node->numberOfChildrenLeft<<"]"<<endl;
+    if(node->search(node,4))
+        cout<<"found"<<endl;
 
     return 0;
 }
