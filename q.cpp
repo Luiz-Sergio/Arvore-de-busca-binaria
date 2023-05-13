@@ -9,15 +9,15 @@ struct Node
     int key;
     struct Node *left;
     struct Node *right;
-    int nivel;
-    int numFilhosEsquerda;
-    int numFilhosDireita;
+    int level;
+    int numberOfChildrenLeft;
+    int numberOfChildrenRight;
 
     Node()
     {
         key = -1;
-        numFilhosEsquerda = 0;
-        numFilhosDireita = 0;
+        numberOfChildrenLeft = 0;
+        numberOfChildrenRight = 0;
         left = NULL;
         right = NULL;
     }
@@ -25,8 +25,8 @@ struct Node
     Node(int k)
     {
         key = k;
-        numFilhosEsquerda = 0;
-        numFilhosDireita = 0;
+        numberOfChildrenLeft = 0;
+        numberOfChildrenRight = 0;
         left = NULL;
         right = NULL;
     }
@@ -43,19 +43,36 @@ struct Node
             node->left = insert(node->left,k);
 
             if(found){
-                node->numFilhosEsquerda++;
+                node->numberOfChildrenLeft++;
             }
         }else if(k>node->key){
             node->right = insert(node->right,k);
             
             if(found){
-                node->numFilhosDireita++;
+                node->numberOfChildrenRight++;
             }
         }else{
             cout<<"Impossível inserir elemento, pois ele já existe!"<<endl;
             found = false;
         }
         return node;
+    }
+
+    bool search(struct Node* node, int k)
+    {
+        bool FOUNDkey;
+        if(node == NULL)
+            return false;
+
+        if(k<node->key){
+            FOUNDkey = search(node->left,k);
+        }else if(k>node->key){
+            FOUNDkey = search(node->right,k);
+        }else{
+            cout<<"Encontrou!!!!!"<<endl;
+            return true;
+        }
+        return FOUNDkey;
     }
 
     // void remove()
@@ -86,18 +103,23 @@ int main()
     node = node->insert(node,0);
     node = node->insert(node,0);
     
+    if(node->search(node,12)){
+        cout<<"Encontrou";
+    }else{
+        cout<<"Nao encontrou";
+    }
 
     cout<<"["<<node->key<<"]"<<endl;
-    cout<<"["<<node->numFilhosDireita<<"]"<<endl;
-    cout<<"["<<node->numFilhosEsquerda<<"]"<<endl;
+    cout<<"["<<node->numberOfChildrenRight<<"]"<<endl;
+    cout<<"["<<node->numberOfChildrenLeft<<"]"<<endl;
 
     cout<<"["<<node->right->key<<"]"<<endl;
-    cout<<"["<<node->right->numFilhosDireita<<"]"<<endl;
-    cout<<"["<<node->right->numFilhosEsquerda<<"]"<<endl;
+    cout<<"["<<node->right->numberOfChildrenRight<<"]"<<endl;
+    cout<<"["<<node->right->numberOfChildrenLeft<<"]"<<endl;
 
     cout<<"["<<node->left->key<<"]"<<endl;
-    cout<<"["<<node->left->numFilhosDireita<<"]"<<endl;
-    cout<<"["<<node->left->numFilhosEsquerda<<"]"<<endl;
+    cout<<"["<<node->left->numberOfChildrenRight<<"]"<<endl;
+    cout<<"["<<node->left->numberOfChildrenLeft<<"]"<<endl;
 
     if(node->left==0)
         cout<<"É NULO COROI"<<endl;
