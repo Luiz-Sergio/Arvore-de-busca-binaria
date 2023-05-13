@@ -1,11 +1,14 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+
+bool found = true;
+
 struct Node
 {
     int key;
-    struct node *left;
-    struct node *right;
+    struct Node *left;
+    struct Node *right;
     int nivel;
     int numFilhosEsquerda;
     int numFilhosDireita;
@@ -30,20 +33,27 @@ struct Node
 
     struct Node* insert(struct Node* node, int k)
     {
+        found = true;
         if(node == NULL){
-            struct Node* node = (struct Node*) malloc(sizeof(struct Node));
-            node->key = k;
-            node->left = NULL;
-            node->right = NULL;
+            node = new Node(k);
             return node;
         }
 
         if(k<node->key){
             node->left = insert(node->left,k);
+
+            if(found){
+                node->numFilhosEsquerda++;
+            }
         }else if(k>node->key){
             node->right = insert(node->right,k);
+            
+            if(found){
+                node->numFilhosDireita++;
+            }
         }else{
             cout<<"Impossível inserir elemento, pois ele já existe!"<<endl;
+            found = false;
         }
         return node;
     }
@@ -61,17 +71,34 @@ bool is_number(const std::string &s);
 
 int main()
 {
-    //Node node = Node(5);
     struct Node *node = NULL;
     
     node = node->insert(node,5);
     node = node->insert(node,5);
-
+    node = node->insert(node,10);
+    node = node->insert(node,3);
+    node = node->insert(node,2);
+    node = node->insert(node,4);
+    node = node->insert(node,1);
+    node = node->insert(node,10);
+    node = node->insert(node,12);
+    node = node->insert(node,12);
+    node = node->insert(node,0);
+    node = node->insert(node,0);
     
 
     cout<<"["<<node->key<<"]"<<endl;
     cout<<"["<<node->numFilhosDireita<<"]"<<endl;
     cout<<"["<<node->numFilhosEsquerda<<"]"<<endl;
+
+    cout<<"["<<node->right->key<<"]"<<endl;
+    cout<<"["<<node->right->numFilhosDireita<<"]"<<endl;
+    cout<<"["<<node->right->numFilhosEsquerda<<"]"<<endl;
+
+    cout<<"["<<node->left->key<<"]"<<endl;
+    cout<<"["<<node->left->numFilhosDireita<<"]"<<endl;
+    cout<<"["<<node->left->numFilhosEsquerda<<"]"<<endl;
+
     if(node->left==0)
         cout<<"É NULO COROI"<<endl;
     else
@@ -128,8 +155,5 @@ int main()
 
 bool is_number(const std::string &s)
 {
-    std::string::const_iterator it = s.begin();
-    while (it != s.end() && std::isdigit(*it))
-        ++it;
-    return !s.empty() && it == s.end();
+    return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
 }
