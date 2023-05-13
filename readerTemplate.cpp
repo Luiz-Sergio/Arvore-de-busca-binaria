@@ -7,29 +7,66 @@ struct Node
     struct node *left;
     struct node *right;
     int nivel;
+    int numFilhosEsquerda;
+    int numFilhosDireita;
+
+    Node()
+    {
+        key = -1;
+        numFilhosEsquerda = 0;
+        numFilhosDireita = 0;
+        left = NULL;
+        right = NULL;
+    }
 
     Node(int k)
     {
         key = k;
+        numFilhosEsquerda = 0;
+        numFilhosDireita = 0;
+        left = NULL;
+        right = NULL;
     }
 
-    void insert()
+    void insert(Node* node, int k)
     {
+        if(*node == NULL){
+            *node = Node(k);
+            cout<<"ENTROU"<<endl;
+        }
+
     }
 
-    void remove()
-    {
-    }
+    // void remove()
+    // {
+    // }
 
-    void print()
-    {
-    }
+    // void print()
+    // {
+    // }
 };
 
 bool is_number(const std::string &s);
 
 int main()
 {
+    //Node node = Node(5);
+    Node node = NULL;
+    
+    node.insert(&node,5);
+
+    
+
+    cout<<"["<<node.key<<"]"<<endl;
+    cout<<"["<<node.numFilhosDireita<<"]"<<endl;
+    cout<<"["<<node.numFilhosEsquerda<<"]"<<endl;
+    if(node.left==0)
+        cout<<"É NULO COROI"<<endl;
+    else
+        cout<<"Não é nulo";
+    if(node.right==NULL)
+        cout<<"É NULO COROI"<<endl;    
+
     string s;
     int numbers;
 
