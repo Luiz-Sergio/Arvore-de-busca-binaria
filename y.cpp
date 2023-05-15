@@ -16,6 +16,7 @@ struct Node
     Node(int k)
     {
         key = k;
+        level = 1;
         numberOfChildrenLeft = 0;
         numberOfChildrenRight = 0;
         left = NULL;
@@ -66,14 +67,16 @@ struct Node
         return FOUNDkey;
     }
 
+
+
     struct Node* findPredecessor(struct Node* node)
-{
-    struct Node* current = node->left;
-    while (current->right != NULL) {
-        current = current->right;
+    {
+        struct Node* current = node->left;
+        while (current->right != NULL) {
+            current = current->right;
+        }
+        return current;
     }
-    return current;
-}
 
 struct Node* removeKey(struct Node* node, int k)
 {
@@ -119,73 +122,158 @@ struct Node* removeKey(struct Node* node, int k)
     }
 
     return node;
-}
-int countChildren(struct Node* node)
-{
-    if (node == NULL) {
-        return 0;
     }
-    return 1 + countChildren(node->left) + countChildren(node->right);
-}
+        int countChildren(struct Node* node)
+        {
+            if (node == NULL) {
+                return 0;
+            }
+            return 1 + countChildren(node->left) + countChildren(node->right);
+        }
 
-int enesimoElemento(struct Node* node, int pos, int &count){
-    int achou;
-    if(node->left != NULL)
-        achou = enesimoElemento(node->left, pos, count);
-        if(achou!=0)
-            return achou;
+    int enesimoElemento(struct Node* node, int pos, int &count){
+        int achou;
+        if(node->left != NULL)
+            achou = enesimoElemento(node->left, pos, count);
+            if(achou!=0)
+                return achou;
+            
+        count++;
         
-    count++;
-    
-    if(count == pos)
-        return node->key;
+        if(count == pos)
+            return node->key;
 
-    if(node->right != NULL)
-        achou = enesimoElemento(node->right, pos, count);
-        if(achou != 0)
-            return achou;
-    return 0;
-}
-
-int enesimoElemento(int pos, struct Node* node){
-    int count = 0;
-    return enesimoElemento(node,pos,count);
-}
-
-int posicao(struct Node* node, int value, int &count){
-    int achou = 0;
-
-    //só chama recursão se o nó esquerdo não for vazio
-    if(node->left != NULL)
-        achou = posicao(node->left, value, count);
-        if(achou!=0)//se o nó foi encontrado pare recursão
-            return achou;
-
-    //se chave for maior que o valor que estamos procurando pare recursão e retorne 0 simbolizando que não foi achado
-    if(node->key>value){
+        if(node->right != NULL)
+            achou = enesimoElemento(node->right, pos, count);
+            if(achou != 0)
+                return achou;
         return 0;
     }
 
-    count++;
-
-    //se chave for igual a que estamos procurando pare recursão e retorne o valor
-    if(value == node->key){
-        return count;
+    int enesimoElemento(int pos, struct Node* node){
+        int count = 0;
+        return enesimoElemento(node,pos,count);
     }
 
-    //só chama recursão se o nó direito não for vazio 
-    if(node->right != NULL)
-        achou = posicao(node->right, value, count);
-        if(achou != 0)//se o nó foi encontrado pare recursão
-            return achou;
+    int posicao(struct Node* node, int value, int &count){
+        int achou = 0;
 
-    return 0;
-}
+        //só chama recursão se o nó esquerdo não for vazio
+        if(node->left != NULL)
+            achou = posicao(node->left, value, count);
+            if(achou!=0)//se o nó foi encontrado pare recursão
+                return achou;
 
-int posicao(int value, struct Node* node){
-    int count = 0;
-    return posicao(node,value,count);
-}
+        //se chave for maior que o valor que estamos procurando pare recursão e retorne 0 simbolizando que não foi achado
+        if(node->key>value){
+            return 0;
+        }
+
+        count++;
+
+        //se chave for igual a que estamos procurando pare recursão e retorne o valor
+        if(value == node->key){
+            return count;
+        }
+
+        //só chama recursão se o nó direito não for vazio 
+        if(node->right != NULL)
+            achou = posicao(node->right, value, count);
+            if(achou != 0)//se o nó foi encontrado pare recursão
+                return achou;
+
+        return 0;
+    }
+
+    int posicao(int value, struct Node* node){
+        int count = 0;
+        return posicao(node,value,count);
+    }
+
+
+    // Ao chamar a função passar 1 como parâmetro para ser o nível da raiz.
+    void calculaNivel(struct Node* node, int l){
+        node->level = l;
+        //cout << "key = " << node->key << " level = " << node->level << endl;
+
+        if(node->left != NULL){
+            node->calculaNivel(node->left, l+1);
+        }
+        if(node->right != NULL){
+            node->calculaNivel(node->right, l+1);
+        }
+
+        return;
+    }
+
+    int calcQtdDigitos(int numero){
+        if ((numero / 10) == 0){ 
+            return 1;
+        }
+        else{
+            // efetua mais uma chamada recursiva
+            return 1 + calcQtdDigitos(numero / 10);
+        }
+    }
+
+    void imprimeFormato1(struct Node* node){
+        for(int ii = 1; ii < node->level; ii++){
+            cout << "    ";
+        }
+
+        cout<<node->key;
+
+        for(int ii = 4; ii < 40-node->level*4-calcQtdDigitos(node->key); ii++){
+            cout<<"-";
+        }
+
+        cout<<endl;
+
+        if(node->left != NULL){
+            imprimeFormato1(node->left);
+        }if(node->right != NULL){
+            imprimeFormato1(node->right);
+        }
+        
+        return;
+    }
+
+    void imprimeFormato2(struct Node* node){
+        cout<<"(" << node->key;
+
+        if(node->left != NULL){
+            cout<<" ";
+            imprimeFormato2(node->left);
+        }if(node->right != NULL){
+            cout<<" ";
+            imprimeFormato2(node->right);
+        }
+
+
+        cout<<")";
+    }
+
+    void imprimeArvore(struct Node* node, int s){
+        if(s == 1){
+            imprimeFormato1(node);
+        }
+        else if(s == 2){
+            imprimeFormato2(node);
+            cout<<endl;
+        }
+    }
+
+    string pre_ordem(struct Node* node){
+        string concatenados = to_string(node->key);
+
+        if(node->left != NULL){
+            concatenados = concatenados + " " + pre_ordem(node->left);
+        }if(node->right != NULL){
+            concatenados = concatenados + " " + pre_ordem(node->right);
+        }
+    
+    return concatenados;
+    }
 
 };
 
@@ -205,6 +293,7 @@ int main()
         {
             numbers = stoi(s);
             node = node->insert(node, numbers);
+            
         }
         else
         { // read commands here
@@ -239,6 +328,11 @@ int main()
         }
            
     }
+
+    cout << node->pre_ordem(node) << endl;
+    // node->calculaNivel(node, 1);
+    // node->imprimeArvore(node, 1);
+    // node->imprimeArvore(node, 2);
     // cout<<"["<<node->key<<"]"<<endl;
     // cout<<"["<<node->numberOfChildrenRight<<"]"<<endl;
     // cout<<"["<<node->numberOfChildrenLeft<<"]"<<endl;
@@ -253,8 +347,10 @@ int main()
     // cout<<"chave a ser deletada"<<node->right->left->key<<endl;
     // cout<<"chave a ser deletada"<<node->right->right->key<<endl;
     // cout<<"chave a ser deletada"<<node->right->left->right->key<<endl;
-    cout<<"(((("<<node->enesimoElemento(5,node)<<"))))";
-    cout<<"(((("<<node->posicao(3,node)<<"))))";
+    // cout<<"(((("<<node->enesimoElemento(5,node)<<"))))";
+    // cout<<"(((("<<node->posicao(3,node)<<"))))";
+
+    
 
 
     return 0;
