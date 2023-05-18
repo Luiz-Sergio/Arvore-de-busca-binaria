@@ -334,6 +334,33 @@ struct Node* removeKey(struct Node* node, int k)
         }
         else return -1;
     }
+
+    bool ehCheia(struct Node * node){
+        int count = 0,nivel = 0;
+        bool eh = ehCheia(node,count,nivel);        
+    }
+
+    bool ehCheia(struct Node * node, int& count, int& nivel){
+        bool eh = true;
+        if(node == NULL){
+            return nivel == count;
+        }
+        if((node->left == NULL && node->right != NULL) || (node->left != NULL && node->right == NULL)){
+            return false;
+        }
+        
+        count++;
+        if(nivel == 0){
+            if(node->left == NULL && node->right == NULL) nivel = count;
+        }else {
+            if(node->left == NULL && node->right == NULL) return (nivel == count);
+        }
+        ehCheia(node->left,count,nivel); 
+        ehCheia(node->right,count,nivel);
+        count--;
+        return eh;
+    }
+
     
 
 
@@ -365,7 +392,7 @@ int main()
             }
             else if (s == "MEDIANA")
             {
-                // call function mediana
+                cout << node->ehCheia(node) << endl;
             }
             else if (s == "COMPLETA")
             {
@@ -393,10 +420,10 @@ int main()
 
     cout << node->pre_ordem(node) << endl;
     cout << "Mediana: " << node->getMedian(node) << endl;
-    cout << "Média: "<< node->getAverage(2,node) << endl;
+    cout << "Média: "<< node->getAverage(5,node) << endl;
     node->imprimeArvore(node, 1);
     node->imprimeArvore(node, 2);
-    
+    cout << node->ehCheia(node) << endl;
     // cout<<"["<<node->key<<"]"<<endl;
     // cout<<"["<<node->numberOfChildrenRight<<"]"<<endl;
     // cout<<"["<<node->numberOfChildrenLeft<<"]"<<endl;
