@@ -28,6 +28,7 @@ struct Node
         found = true;
         if(node == NULL){
             node = new Node(k);
+            cout<<k<<" foi inserido com sucesso!!"<<endl;
             return node;
         }
 
@@ -44,7 +45,7 @@ struct Node
                 node->numberOfChildrenRight++;
             }
         }else{
-            cout<<"Imposs├¡vel inserir elemento, pois ele j├í existe!"<<endl;
+            cout<<"Impossível inserir " << k<<", pois ele já existe!"<<endl;
             found = false;
         }
         return node;
@@ -197,7 +198,7 @@ struct Node* removeKey(struct Node* node, int k)
         return 0;
     }
 
-    int posicao(int value, struct Node* node){
+    int posicao(struct Node* node, int value){
         int count = 0;
         return posicao(node,value,count);
     }
@@ -335,31 +336,86 @@ struct Node* removeKey(struct Node* node, int k)
         else return -1;
     }
 
-    bool ehCheia(struct Node * node){
-        int count = 0,nivel = 0;
-        bool eh = ehCheia(node,count,nivel);        
+    int getHeight(struct Node* node) {
+        if (node == NULL) {
+            return 0;
+        }
+        int leftHeight = getHeight(node->left);
+        int rightHeight = getHeight(node->right);
+        return 1 + (leftHeight > rightHeight ? leftHeight : rightHeight);
     }
 
-    bool ehCheia(struct Node * node, int& count, int& nivel){
-        bool eh = true;
-        if(node == NULL){
-            return nivel == count;
+    bool ehCompleta(struct Node* node) {
+        int height = getHeight(node);
+        return ehCompleta(node, 1, height);
+    }
+
+    bool ehCompleta(struct Node* node, int level, int height) {
+
+        if(level == height + 1 ) {
+            // If we have reached the last level, check if the node is a leaf
+            return (node == NULL);
         }
-        if((node->left == NULL && node->right != NULL) || (node->left != NULL && node->right == NULL)){
+        if(level == height ) {
+            // If we have reached the last level, check if the node is a leaf
+            return true;
+        }
+        if (node == NULL) {
+            // If we have reached a null node before the last level, the tree is not full
             return false;
         }
-        
-        count++;
-        if(nivel == 0){
-            if(node->left == NULL && node->right == NULL) nivel = count;
-        }else {
-            if(node->left == NULL && node->right == NULL) return (nivel == count);
-        }
-        ehCheia(node->left,count,nivel); 
-        ehCheia(node->right,count,nivel);
-        count--;
-        return eh;
+        // Recursively check if both left and right subtrees are full
+
+        return ehCompleta(node->left, level + 1, height) && ehCompleta(node->right, level + 1, height);
+
     }
+
+    bool ehCheia(struct Node* node) {
+        int height = getHeight(node);
+        return ehCheia(node, 1, height);
+    }
+
+    bool ehCheia(struct Node* node, int level, int height) {
+
+        if(level == height + 1) {
+            // If we have reached the last level, check if the node is a leaf
+            return (node == NULL);
+        }
+        if (node == NULL) {
+            // If we have reached a null node before the last level, the tree is not full
+            return false;
+        }
+        // Recursively check if both left and right subtrees are full
+
+        return ehCheia(node->left, level + 1, height) && ehCheia(node->right, level + 1, height);
+
+    }
+
+    // bool ehCheia(struct Node * node){
+    //     int count = 0,nivel = 0;
+    //     bool eh = ehCheia(node,count,nivel);        
+    // }
+
+    // bool ehCheia(struct Node * node, int& count, int& nivel){
+    //     bool eh = true;
+    //     if(node == NULL){
+    //         return nivel == count;
+    //     }
+    //     if((node->left == NULL && node->right != NULL) || (node->left != NULL && node->right == NULL)){
+    //         return false;
+    //     }
+        
+    //     count++;
+    //     if(nivel == 0){
+    //         if(node->left == NULL && node->right == NULL) nivel = count;
+    //     }else {
+    //         if(node->left == NULL && node->right == NULL) return (nivel == count);
+    //     }
+    //     ehCheia(node->left,count,nivel); 
+    //     ehCheia(node->right,count,nivel);
+    //     count--;
+    //     return eh;
+    // }
 
     
 
@@ -371,78 +427,83 @@ bool is_number(const std::string &s);
 int main()
 {
     struct Node *node = NULL;
-
-    string s;
     int numbers;
 
-    while (cin >> s)
-    {
-        // fill the three here
-        if (is_number(s))
-        {
-            numbers = stoi(s);
-            node = node->insert(node, numbers);
-            
-        }
-        else
-        { // read commands here
-            if (s == "CHEIA")
+     string in1;
+    getline(cin, in1);
+    istringstream iss(in1);
+    int num;
+    while (iss >> num) {
+        // Do something with num
+        node = node->insert(node, num);
+    }
+    cout<<"/////////////////////////////"<<endl;
+    // Read strings from in2
+    string s;
+    while (cin >> s) {
+        cout<<"["<<s<<"]"<<endl;
+        // Do something with in2
+        if (s == "CHEIA")
             {
-                
+                cout << "EH CHEIA: "<<node->ehCheia(node) << endl;
             }
             else if (s == "MEDIANA")
             {
-                cout << node->ehCheia(node) << endl;
+                cout << "Mediana: " << node->getMedian(node) << endl;   
             }
             else if (s == "COMPLETA")
             {
-                cout << "completa" << endl;
+                cout << "EH COMPLETA: "<<node->ehCompleta(node) << endl;
             }
             else if (s == "ENESIMO")
             {
-                
+                int pos;
+                cin>>pos;
+                cout << "ENESIMO : "<< node->enesimoElemento(pos, node)<<endl;
             }
             else if (s == "POSICAO")
             {
+                int value;
+                cin>>value;
+                cout << "POSIÇÃO: "<< node->posicao(node, value)<<endl;
             }
-            else if (s == "MEDIANA")
+            else if (s == "MEDIA")
             {
+                int value;
+                cin>>value;
+                cout << "Média: "<< node->getAverage(value,node) << endl;
             }
             else if (s == "IMPRIMA")
             {
+                int value;
+                cin>>value;
+                node->imprimeArvore(node, value);
+                cout<<endl;
             }
             else if (s == "REMOVA")
+            {   
+                int value;
+                cin>>value;
+                cout<<"[>>>>"<<value<<"]"<<endl;
+                node->removeKey(node, value);
+                cout<<endl;
+            }else if (s == "PREORDEM")
             {
+                cout << node->pre_ordem(node) << endl;
+            }else if (s == "INSIRA")
+            {
+                int value;
+                cin>>value;
+                node->insert(node, value);
+                cout<<endl;
+            }else if (s == "BUSCAR")
+            {
+                string value;
+                cin>>value;
+                node->search(node, stoi(value));
+                cout<<endl;
             }
-        }
-           
     }
-
-    cout << node->pre_ordem(node) << endl;
-    cout << "Mediana: " << node->getMedian(node) << endl;
-    cout << "Média: "<< node->getAverage(5,node) << endl;
-    node->imprimeArvore(node, 1);
-    node->imprimeArvore(node, 2);
-    cout << node->ehCheia(node) << endl;
-    // cout<<"["<<node->key<<"]"<<endl;
-    // cout<<"["<<node->numberOfChildrenRight<<"]"<<endl;
-    // cout<<"["<<node->numberOfChildrenLeft<<"]"<<endl;
-    // if(node->search(node,4))
-    //     cout<<"found"<<endl;
-    // cout<<"chave a ser deletada"<<node->key<<endl;
-    // cout<<"chave a ser deletada"<<node->right->left->key<<endl;
-    // cout<<"chave a ser deletada"<<node->right->right->key<<endl;
-    // node = node->removeKey(node,10);
-    // cout<<"chave a ser deletada"<<node->key<<endl;
-    // cout<<"chave a ser deletada"<<node->right->key<<endl;
-    // cout<<"chave a ser deletada"<<node->right->left->key<<endl;
-    // cout<<"chave a ser deletada"<<node->right->right->key<<endl;
-    // cout<<"chave a ser deletada"<<node->right->left->right->key<<endl;
-    // cout<<"(((("<<node->enesimoElemento(5,node)<<"))))";
-    // cout<<"(((("<<node->posicao(3,node)<<"))))";
-
-    
-
 
     return 0;
 }
