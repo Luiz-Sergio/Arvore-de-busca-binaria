@@ -481,7 +481,7 @@ int main()
 {
     struct Node *node = NULL;
     int numbers;
-    fstream file1("in1");
+    fstream file1("arquivo1");
 
     int numb;
     if (file1.is_open())
@@ -496,7 +496,7 @@ int main()
 
     cout << endl
          << endl;
-    fstream file2("in2");
+    fstream file2("arquivo2");
     string s;
     if (file2.is_open())
     {
@@ -533,7 +533,7 @@ int main()
                     cout << "A árvore não tem a posição " << pos << endl; 
                 }
                 else {
-                    cout <<"Enésimo elemente na posição " << pos << " em ordem simétrica é o " << node->enesimoElemento(pos, node) << endl;
+                    cout <<"Enésimo elemento na posição " << pos << " em ordem simétrica é o " << node->enesimoElemento(pos, node) << endl;
                 }
             }
             else if (s == "POSICAO")
