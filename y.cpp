@@ -340,6 +340,7 @@ struct Node
             imprimeFormato2(node);
             cout << endl;
         }
+        else cout << "Insira 1 ou 2 para imprimir em um formato específico." << endl;
     }
 
     string pre_ordem(struct Node *node)
@@ -437,20 +438,16 @@ struct Node
 
         if (level == height + 1)
         {
-            // If we have reached the last level, check if the node is a leaf
             return (node == NULL);
         }
         if (level == height)
         {
-            // If we have reached the last level, check if the node is a leaf
             return true;
         }
         if (node == NULL)
         {
-            // If we have reached a null node before the last level, the tree is not full
             return false;
         }
-        // Recursively check if both left and right subtrees are full
 
         return ehCompleta(node->left, level + 1, height) && ehCompleta(node->right, level + 1, height);
     }
@@ -466,15 +463,12 @@ struct Node
 
         if (level == height + 1)
         {
-            // If we have reached the last level, check if the node is a leaf
             return (node == NULL);
         }
         if (node == NULL)
         {
-            // If we have reached a null node before the last level, the tree is not full
             return false;
         }
-        // Recursively check if both left and right subtrees are full
 
         return ehCheia(node->left, level + 1, height) && ehCheia(node->right, level + 1, height);
     }
@@ -511,7 +505,12 @@ int main()
         {
             if (s == "CHEIA")
             {
-                cout << "EH CHEIA: " << node->ehCheia(node) << endl;
+                if(node->ehCheia(node)){
+                    cout << "A árvore é cheia"<< endl;
+                }
+                else {
+                    cout << "A árvore NÃO é cheia" << endl;
+                }
             }
             else if (s == "MEDIANA")
             {
@@ -519,25 +518,45 @@ int main()
             }
             else if (s == "COMPLETA")
             {
-                cout << "EH COMPLETA: " << node->ehCompleta(node) << endl;
+                if(node->ehCompleta(node)){
+                    cout << "A árvore é completa"<< endl;
+                }
+                else {
+                    cout << "A árvore NÃO é completa" << endl;
+                }
             }
             else if (s == "ENESIMO")
             {
                 int pos;
                 file2 >> pos;
-                cout << "ENESIMO : " << node->enesimoElemento(pos, node) << endl;
+                if(node->enesimoElemento(pos, node) == 0){
+                    cout << "A árvore não tem a posição " << pos << endl; 
+                }
+                else {
+                    cout <<"Enésimo elemente na posição " << pos << " em ordem simétrica é o " << node->enesimoElemento(pos, node) << endl;
+                }
             }
             else if (s == "POSICAO")
             {
                 int value;
                 file2 >> value;
-                cout << "POSIÇÃO: " << node->posicao(node, value) << endl;
+                if(node->posicao(node, value) == 0){
+                    cout << value <<" não está na árvore!" << endl; 
+                }
+                else {
+                    cout << value <<" em ordem simétrica, está na posição " << node->posicao(node, value) << endl;
+                }
             }
             else if (s == "MEDIA")
             {
                 int value;
                 file2 >> value;
-                cout << "Média: " << node->getAverage(value, node) << endl;
+                if(node->getAverage(value, node) == -1){
+                    cout << value <<" não está na árvore!" << endl; 
+                }
+                else {
+                    cout << "Média da sub-árvore com raiz " << value << " é igual a " << node->getAverage(value, node) << endl;
+                }
             }
             else if (s == "IMPRIMA")
             {
@@ -568,7 +587,9 @@ int main()
             {
                 int value;
                 file2 >> value;
-                node->search(node, value);
+                if(!node->search(node, value)){
+                    cout << value <<" não foi encontrado na árvore!" << endl; 
+                }
                 cout << endl;
             }
         }
