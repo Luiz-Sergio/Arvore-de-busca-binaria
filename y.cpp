@@ -555,7 +555,7 @@ int main()
                     cout << value <<" não está na árvore!" << endl; 
                 }
                 else {
-                    cout << "Média da sub-árvore com raiz " << value << " é igual a " << node->getAverage(value, node) << endl;
+                    cout << "Média da árvore com raiz " << value << " é igual a " << node->getAverage(value, node) << endl;
                 }
             }
             else if (s == "IMPRIMA")
