@@ -11,6 +11,8 @@ struct Node
     int level;
     int numberOfChildrenLeft;
     int numberOfChildrenRight;
+    int height;
+    int balanco;
 
     Node(int k)
     {
@@ -20,6 +22,8 @@ struct Node
         numberOfChildrenRight = 0;
         left = NULL;
         right = NULL;
+        height = 1;
+        balanco = 0;
     }
 
     struct Node *insert(struct Node *node, int k)
@@ -55,7 +59,48 @@ struct Node
             cout << "Impossível inserir " << k << ", pois ele já existe!" << endl;
             found = false;
         }
+
+        if(node != NULL){
+            node->height = getHeight(node);
+            node->balanco = updateBalanco(node);
+        }
+
+        cout << "Balanço = " << node->balanco << " Chave = " << node->key << endl;
+
+        if (node->balanco > 1) // Right-heavy subtree
+        {
+            if (k > node->right->key) {
+                cout << "Rotação a esquerda" << endl;                
+                node = rotacao_esquerda(node);
+            }
+            else // Right-Left case
+            {   
+                cout << "Rotação dupla a esquerda" << endl;
+                node->right = rotacao_direita(node->right);
+                node = rotacao_esquerda(node);
+            }
+        }
+        else if (node->balanco < -1) // Left-heavy subtree
+        {
+            if (k < node->left->key){
+                cout << "Rotação a direita" << endl;
+                node = rotacao_direita(node);
+            }
+            else // Left-Right case
+            {
+                cout << "Rotação dupla a direita" << endl;
+                node->left = rotacao_esquerda(node->left);
+                node = rotacao_direita(node);
+            }
+        }
+        
+
         return node;
+    }
+
+    int updateBalanco(struct Node *node)
+    {   
+        return getHeight(node->right) - getHeight(node->left);
     }
 
     bool search(struct Node *node, int k)
@@ -113,10 +158,17 @@ struct Node
 
     struct Node *removeKey(struct Node *node, int k, bool &imprime)
     {
+        
         if (node == NULL)
         {
             cout << k << " não está na árvore, não pode ser removido" << endl;
             return node;
+        }
+
+        if (node != NULL)
+        {
+            node->numberOfChildrenLeft = countChildren(node->left);
+            node->numberOfChildrenRight = countChildren(node->right);
         }
 
         if (k < node->key)
@@ -142,18 +194,21 @@ struct Node
             }
 
             if (node->numberOfChildrenLeft == 0 && node->numberOfChildrenRight == 0)
-            {
+            {   
+                cout << "Entrei aqui 1" << endl;
                 delete node;
                 return NULL;
             }
             else if (node->numberOfChildrenLeft > 0 && node->numberOfChildrenRight == 0)
-            {
+            {   
+                cout << "Entrei aqui 2" << endl;
                 struct Node *temp = node;
                 node = node->left;
                 delete temp;
             }
             else if (node->numberOfChildrenLeft == 0 && node->numberOfChildrenRight > 0)
-            {
+            {   
+                cout << "Entrei aqui 3" << endl;
                 struct Node *temp = node;
                 node = node->right;
                 delete temp;
@@ -172,6 +227,29 @@ struct Node
         {
             node->numberOfChildrenLeft = countChildren(node->left);
             node->numberOfChildrenRight = countChildren(node->right);
+            node->height = getHeight(node);
+            node->balanco = updateBalanco(node);
+        }
+
+        if (node->balanco > 1) // Right-heavy subtree
+        {
+            if (node->right->balanco >= 0) // Right-Right case
+                return rotacao_esquerda(node);
+            else // Right-Left case
+            {
+                node->right = rotacao_direita(node->right);
+                return rotacao_esquerda(node);
+            }
+        }
+        else if (node->balanco < -1) // Left-heavy subtree
+        {
+            if (node->left->balanco <= 0) // Left-Left case
+                return rotacao_direita(node);
+            else // Left-Right case
+            {
+                node->left = rotacao_esquerda(node->left);
+                return rotacao_direita(node);
+            }
         }
 
         return node;
@@ -289,7 +367,7 @@ struct Node
             cout << "    ";
         }
 
-        cout << node->key;
+        cout << node->key<< endl;
 
         for (int ii = 4; ii < 40 - node->level * 4 - calcQtdDigitos(node->key); ii++)
         {
@@ -473,6 +551,21 @@ struct Node
         return ehCheia(node->left, level + 1, height) && ehCheia(node->right, level + 1, height);
     }
 
+    struct Node *rotacao_direita(Node *node)
+    {
+        Node *node_u = node->left;
+        node->left = node_u->right;
+        node_u->right = node;
+        return node_u;
+    }
+
+    struct Node *rotacao_esquerda(Node *node)
+    {
+        Node *node_u = node->right;
+        node->right = node_u->left;
+        node_u->left = node;
+        return node_u;
+    }
 };
 
 bool is_number(const std::string &s);
@@ -491,6 +584,7 @@ int main()
         {
             node = node->insert(node, numb);
         }
+        node->imprimeArvore(node, 2);
     }
     file1.close();
 
@@ -569,7 +663,7 @@ int main()
             {
                 int value;
                 file2 >> value;
-                node->removeKey(node, value);
+                node = node->removeKey(node, value);
                 cout << endl;
             }
             else if (s == "PREORDEM")
@@ -580,7 +674,7 @@ int main()
             {
                 int value;
                 file2 >> value;
-                node->insert(node, value);
+                node = node->insert(node, value);
                 cout << endl;
             }
             else if (s == "BUSCAR")
